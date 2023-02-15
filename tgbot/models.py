@@ -24,7 +24,9 @@ class Company(models.Model):
         return self.name
 
 class User(models.Model):
-    company = models.ForeignKey(Company, related_name='users', on_delete=models.PROTECT)
+    telegram_id = models.IntegerField('Телеграм ID', unique=True)
+    state = models.CharField('Состояние бота', max_length=200, blank=True)
+    company = models.ForeignKey(Company, related_name='users', on_delete=models.PROTECT, null=True)
     name = models.CharField('ФИО пользователя', max_length=200)
     phone = models.CharField('Телефон', max_length=200, null=True, blank=True)
     telegram = models.CharField('Телеграм', max_length=200)
