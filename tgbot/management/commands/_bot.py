@@ -7,14 +7,15 @@ from telegram.ext import (
     Filters
 )
 
-from _bot_functions import (
-    start_new_client,
+from ._bot_functions import (
+    start,
+    input_name,
     input_phone_number,
     start_owner,
     profile_owner,
 )
 
-from _func_for_user import get_or_create_user
+from ._func_for_user import get_user_group
 
 env = Env()
 env.read_env()
@@ -29,25 +30,33 @@ def handle_users_reply(update, context):
     else:
         return
 
-    user, group = get_or_create_user(username)
+    user, group = get_user_group(username)
 
-    if user_reply == '/start':
+    if user_reply == '/start' or group == 'NEW_USER':
         user_state = 'START'
     else:
         user_state = user.state
+    if user_reply == 'add_client':
+        user_state = 'INPUT_NAME'
+    
 
     print(f'group: {group}')
     print(f'user_state: {user_state}')
+
 
     if group == 'OWNER':
         states_functions = {
             'START': start_owner,
             'PROFILE_OWNER': profile_owner,
         }
-
     elif group == 'MANAGER':
         states_functions = {
             # 'START': start_manager,
+        }
+    elif group == 'NEW_USER':
+        states_functions = {
+            'START': start,
+            'INPUT_NAME': input_name
         }
     elif group == 'DEVELOPER':
         states_functions = {
@@ -68,8 +77,10 @@ def handle_users_reply(update, context):
     state_handler = states_functions[user_state]
 
     next_state = state_handler(update, context)
-    user.state = next_state
-    user.save()
+
+    if user:
+        user.state = next_state
+        user.save()
 
 
 def main():

@@ -1,7 +1,7 @@
 from tgbot.models import User, Developer, Manager, Owner
 
 
-def get_or_create_user(telegram: str):
+def get_user_group(telegram: str):
     if Owner.objects.filter(telegram=telegram):
         return Owner.objects.filter(telegram=telegram)[0],'OWNER'
     elif Manager.objects.filter(telegram=telegram):
@@ -11,8 +11,14 @@ def get_or_create_user(telegram: str):
     elif User.objects.filter(telegram=telegram):
         return User.objects.filter(telegram=telegram)[0], 'CLIENT'
     else:
-        user = User.objects.create(telegram=telegram)
-        return user, 'NEW_CLIENT'
+        return None, 'NEW_USER'
+
+
+def create_user(telegram: str):
+    user, created = User.objects.get_or_create(
+        telegram=telegram,
+    )
+    return created
 
 
 def add_user_name(user: User, name: str):
