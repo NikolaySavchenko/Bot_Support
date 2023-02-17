@@ -1,3 +1,5 @@
+from enum import unique
+
 from django.db import models
 
 
@@ -14,6 +16,7 @@ class Tariff(models.Model):
 
 class Company(models.Model):
     name = models.CharField('Название компании', max_length=200)
+    unp = models.IntegerField('УНП компании', unique=True)
     phone = models.CharField('Телефон', max_length=200)
     tariff = models.ForeignKey(Tariff, related_name='users', on_delete=models.PROTECT)
     paid_to = models.DateField('Оплачено до:')
