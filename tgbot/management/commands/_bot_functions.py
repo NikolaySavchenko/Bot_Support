@@ -1,6 +1,6 @@
-from ._keyboards import owner_menu_keyboard
+from _keyboards import owner_menu_keyboard
 
-from ._func_for_user import (
+from _func_for_user import (
     get_user,
     add_user_name
 )

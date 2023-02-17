@@ -7,14 +7,14 @@ from telegram.ext import (
     Filters
 )
 
-from ._bot_functions import (
+from _bot_functions import (
     start_new_client,
     input_phone_number,
     start_owner,
     profile_owner,
 )
 
-from ._func_for_user import get_or_create_user
+from _func_for_user import get_or_create_user
 
 env = Env()
 env.read_env()
