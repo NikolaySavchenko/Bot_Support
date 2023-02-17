@@ -1,17 +1,38 @@
-from ._keyboards import owner_menu_keyboard
+from ._keyboards import (
+    choose_group_keyboard,
+    owner_menu_keyboard,
+)
 
 from ._func_for_user import (
     get_user,
-    add_user_name
+    create_user,
+    add_user_name,
 )
 
-def start_new_client(update, context):
+def start(update, context):
     chat_id = update.message.chat_id
 
     context.bot.send_message(
         chat_id=chat_id,
-        text='Добро пожаловать в нашу тех.поддержку! Как вас зовут?'
+        text='Добро пожаловать в нашу тех.поддержку! Кто вы?',
+        reply_markup=choose_group_keyboard()
     )
+
+    return 'INPUT_NAME'
+
+def input_name(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat.id
+    username = query.message.chat.username
+
+    if query.data == 'add_client':
+
+        create_user(username)
+
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='Как вас зовут?'
+        )
 
     return 'INPUT_PHONE_NUMBER'
 

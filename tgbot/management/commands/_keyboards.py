@@ -1,6 +1,15 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
+def choose_group_keyboard():
+    inline_keyboard = [
+        [InlineKeyboardButton('Клиент', callback_data='add_client')],
+        [InlineKeyboardButton('Разработчик', callback_data='developer')]
+    ]
+    inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
+    return inline_kb_markup
+
+
 def owner_menu_keyboard():
     inline_keyboard = [
         [InlineKeyboardButton('Открыть доступ клиенту', callback_data='open_access_to_user')],
