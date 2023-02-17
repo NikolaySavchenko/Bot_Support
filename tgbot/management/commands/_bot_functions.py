@@ -6,12 +6,15 @@ from ._keyboards import (
 from ._func_for_user import (
     get_user,
     create_user,
+    create_developer,
     add_user_name,
+    add_user_phone,
 )
 
 
 def start(update, context):
-    chat_id = update.message.chat_id
+    print(update)
+    chat_id = update.message.chat.id
 
     context.bot.send_message(
         chat_id=chat_id,
@@ -27,15 +30,25 @@ def input_name(update, context):
     username = query.message.chat.username
 
     if query.data == 'add_client':
+        if create_user(username):
+            context.bot.send_message(
+                chat_id=chat_id,
+                text='Как вас зовут?'
+            )
+            return 'INPUT_PHONE_NUMBER'
+        else:
+            return '/start'
 
-        create_user(username)
-
-        context.bot.send_message(
-            chat_id=chat_id,
-            text='Как вас зовут?'
-        )
-
-    return 'INPUT_PHONE_NUMBER'
+    if query.data == 'add_developer':
+        if create_developer(username):
+            context.bot.send_message(
+                chat_id=chat_id,
+                text='Как вас зовут?'
+            )
+            # TODO: вести прогера по его ветке
+            return 'INPUT_PHONE_NUMBER'
+        else:
+            return '/start'
 
 
 def input_phone_number(update, context):
@@ -51,7 +64,27 @@ def input_phone_number(update, context):
         text='Введите номер телефона (пример: +79001234567):',
     )
 
-    # return 'CREATE COMPANY'
+    return 'INPUT_COMPANY_NAME'
+
+
+def input_company_name(update, context):
+    chat_id = update.message.chat_id
+    phone = update.message.text
+    username = update.message.chat.username
+    user = get_user(username)
+
+    add_user_phone(user, phone)
+
+    context.bot.send_message(
+        chat_id=chat_id,
+        text='Название вашей компании?',
+    )
+
+    # return 'CHOOSE_TARIF'
+
+
+def start_manager(update, context):
+    pass
 
 
 def start_owner(update, context):

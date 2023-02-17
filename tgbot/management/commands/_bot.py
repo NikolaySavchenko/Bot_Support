@@ -11,6 +11,8 @@ from ._bot_functions import (
     start,
     input_name,
     input_phone_number,
+    input_company_name,
+    start_manager,
     start_owner,
     profile_owner,
 )
@@ -32,47 +34,37 @@ def handle_users_reply(update, context):
 
     user, group = get_user_group(username)
 
-    if user_reply == '/start' or group == 'NEW_USER':
+    if user_reply == '/start' and group == 'NEW_USER':
         user_state = 'START'
+    elif user_reply == 'add_client' or user_reply == 'add_developer':
+        user_state = 'INPUT_NAME'
+    elif user_reply == '/start' and group == 'OWNER':
+        user_state = 'START_OWNER'
+    elif user_reply == '/start' and group == 'MANAGER':
+        user_state = 'START_MANAGER'
     else:
         user_state = user.state
-    if user_reply == 'add_client':
-        user_state = 'INPUT_NAME'
     
 
     print(f'group: {group}')
     print(f'user_state: {user_state}')
 
 
-    if group == 'OWNER':
-        states_functions = {
-            'START': start_owner,
-            'PROFILE_OWNER': profile_owner,
-        }
-    elif group == 'MANAGER':
-        states_functions = {
-            # 'START': start_manager,
-        }
-    elif group == 'NEW_USER':
-        states_functions = {
-            'START': start,
-            'INPUT_NAME': input_name
-        }
-    elif group == 'DEVELOPER':
-        states_functions = {
-            # 'START': start_developer,
-        }
-    elif group == 'CLIENT':
-        states_functions = {
-            # 'START': start_client,
-            'INPUT_PHONE_NUMBER': input_phone_number,
-        }
-    elif group == 'NEW_CLIENT':
-        states_functions = {
-            'START': start_new_client,
-        }
-    else:
-        return
+    states_functions = {
+        'START': start,
+        'INPUT_NAME': input_name,
+        'INPUT_PHONE_NUMBER': input_phone_number,
+
+        # client
+        'INPUT_COMPANY_NAME': input_company_name,
+
+        # manager
+        'START_MANAGER': start_manager,
+
+        # owner
+        'START_OWNER': start_owner,
+        'PROFILE_OWNER': profile_owner,
+    }
 
     state_handler = states_functions[user_state]
 

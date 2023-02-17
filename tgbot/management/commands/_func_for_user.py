@@ -17,6 +17,14 @@ def get_user_group(telegram: str):
 def create_user(telegram: str):
     user, created = User.objects.get_or_create(
         telegram=telegram,
+        state='INPUT_PHONE_NUMBER'
+    )
+    return created
+
+def create_developer(telegram: str):
+    developer, created = Developer.objects.get_or_create(
+        telegram=telegram,
+        state='INPUT_PHONE_NUMBER'
     )
     return created
 
@@ -33,3 +41,9 @@ def get_user(telegram: str) -> User:
     )
 
     return user
+
+
+def add_user_phone(user: User, phone: str):
+    user.phone = phone
+    user.save()
+    return True
