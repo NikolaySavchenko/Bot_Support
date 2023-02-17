@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from _bot import main
+from ._bot import main
 
 
 class Command(BaseCommand):
