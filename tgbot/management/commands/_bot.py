@@ -34,14 +34,14 @@ def handle_users_reply(update, context):
 
     user, group = get_user_group(username)
 
-    if user_reply == '/start' and group == 'NEW_USER':
-        user_state = 'START'
-    elif user_reply == 'add_client' or user_reply == 'add_developer':
-        user_state = 'INPUT_NAME'
-    elif user_reply == '/start' and group == 'OWNER':
+    if user_reply == '/start' and group == 'OWNER':
         user_state = 'START_OWNER'
     elif user_reply == '/start' and group == 'MANAGER':
         user_state = 'START_MANAGER'
+    elif user_reply == 'add_client' or user_reply == 'add_developer':
+        user_state = 'INPUT_NAME'
+    elif user_reply == '/start' and group == 'NEW_USER':
+        user_state = 'START'
     else:
         user_state = user.state
     
@@ -57,6 +57,7 @@ def handle_users_reply(update, context):
 
         # client
         'INPUT_COMPANY_NAME': input_company_name,
+        'CHOOSE_TARIF': input_company_name,
 
         # manager
         'START_MANAGER': start_manager,

@@ -13,12 +13,11 @@ from ._func_for_user import (
 
 
 def start(update, context):
-    print(update)
     chat_id = update.message.chat.id
 
     context.bot.send_message(
         chat_id=chat_id,
-        text='Добро пожаловать в нашу тех.поддержку! Кто вы?',
+        text='Добро пожаловать в нашу тех.поддержку! Кто ты?',
         reply_markup=choose_group_keyboard()
     )
 
@@ -56,15 +55,13 @@ def input_phone_number(update, context):
     name = update.message.text
     username = update.message.chat.username
     user = get_user(username)
-
-    add_user_name(user, name)
-
-    context.bot.send_message(
-        chat_id=chat_id,
-        text='Введите номер телефона (пример: +79001234567):',
-    )
-
-    return 'INPUT_COMPANY_NAME'
+    if add_user_name(user, name):
+        print(user.name)
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='Введите номер телефона (пример: +79001234567):',
+        )
+        return 'INPUT_COMPANY_NAME'
 
 
 def input_company_name(update, context):
@@ -80,7 +77,7 @@ def input_company_name(update, context):
         text='Название вашей компании?',
     )
 
-    # return 'CHOOSE_TARIF'
+    return 'CHOOSE_TARIF'
 
 
 def start_manager(update, context):

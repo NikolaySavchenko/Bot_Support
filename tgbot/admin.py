@@ -1,8 +1,17 @@
 from django.contrib import admin
 
-from .models import User, Developer, Manager, Owner
+from .models import User, Developer, Manager, Owner, Tariff
 
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = (
+        'telegram',
+        'name',
+    )
+
 admin.site.register(Developer)
 admin.site.register(Manager)
 admin.site.register(Owner)
+
+
+admin.site.register(Tariff)
