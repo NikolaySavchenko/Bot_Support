@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -7,16 +9,19 @@ class Tariff(models.Model):
     max_time_for_ansver = models.TimeField('Максимальное время ответа на заявку')
     booking_the_developer = models.BooleanField('Возможность закрепить Подрядчика')
     developer_contact = models.BooleanField('Возможность получить контакты Подрядчика')
+    price = models.IntegerField('Цена:')
 
     def __str__(self):
         return self.title
 
 
 class Company(models.Model):
-    name = models.CharField('Название компании', max_length=200)
-    phone = models.CharField('Телефон', max_length=200)
-    tariff = models.ForeignKey(Tariff, related_name='users', on_delete=models.PROTECT)
-    paid_to = models.DateField('Оплачено до:')
+    name = models.CharField('Название компании', max_length=200,
+                            default='Какая-то комания', blank=True, null=True)
+    unp = models.IntegerField('УНП компании', unique=True)
+    phone = models.CharField('Телефон', max_length=200, blank=True, null=True)
+    tariff = models.ForeignKey(Tariff, related_name='users', on_delete=models.PROTECT, null=True)
+    paid_to = models.DateField('Оплачено до:', default=datetime.datetime(2000,1,1), blank=True, null=True)
     # Поле должно быть высчитываемым, но пока не знаю как сделать, оставлю просто число.
     orders_paid = models.IntegerField('Оплаченных заказов осталось')
 
