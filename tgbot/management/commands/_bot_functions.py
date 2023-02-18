@@ -1,6 +1,7 @@
 from ._keyboards import (
     choose_group_keyboard,
     owner_menu_keyboard,
+    user_menu_keyboard,
     choose_tariff_keyboard,
 )
 
@@ -17,6 +18,7 @@ from ._func_for_company import (
     create_company,
     get_tariff_list,
     get_tariff,
+    get_tariff_message,
 )
 
 
@@ -93,7 +95,7 @@ def input_company_name(update, context):
     user = get_user(username)
 
     if get_company(company_unp):
-        return 'CHECK_ACTIVE_TARIFf'
+        return 'CHECK_ACTIVE_TARIFF'
     else:
         company = create_company(company_unp)
         user.company = company
@@ -114,22 +116,13 @@ def choose_tariff(update, context):
         user.company.name = company_name
         user.company.save()
 
-        tariffs = get_tariff_list()
-        message = 'Выберите тариф:'
-        for tariff in tariffs:
-            message += f'\n{tariff.title}:'
-            message += f'\nМаксимальное кол-во обращений в месяц: {tariff.max_requests}'
-            message += f'\nМаксимальное время ответа на заявку: {tariff.max_time_for_ansver}'
-            if tariff.booking_the_developer:
-                message += '\nВозможность закрепить Подрядчика'
-            if tariff.developer_contact:
-                message += '\nВозможность получить контакты Подрядчика'
-            message += '\n'
+        message = get_tariff_message()
         context.bot.send_message(
             chat_id=chat_id,
             text=message,
             reply_markup=choose_tariff_keyboard()
         )
+        
         return 'SEND_BILL'
     else:
         return 'INPUT_COMPANY_UNP'
@@ -154,18 +147,84 @@ def send_bill(update, context):
 
 
 def check_payment(update, context):
+    chat_id = update.message.chat_id
+
+    context.bot.send_message(
+        chat_id=chat_id,
+        text="Счет успешно оплачен! Выберите действие:",
+        reply_markup=user_menu_keyboard()
+    )
+    return 'USER_PROFILE'
+    # context.bot.send_message(
+    #         chat_id=chat_id,
+    #         text="Счет еще не оплачен"
+    #     )
+
+    # return 'CHECK_PAYMENT'
+    
+
+
+def check_active_tariff(update, context):
     query = update.callback_query
     chat_id = query.message.chat.id
     username = query.message.chat.username
     user = get_user(username)
 
+    # TODO: добавить проверку
+    message += "У вас нет активного тарифа\n"
+    message += get_tariff_message()
     context.bot.send_message(
             chat_id=chat_id,
-            text="Счет еще не оплачен"
+            text=message,
+            reply_markup=choose_tariff_keyboard()
         )
-    
-    return 'CHECK_PAYMENT'
 
+    return 'SEND_BILL'
+
+
+def user_menu(update, context):
+    try:
+        query = update.callback_query
+        chat_id = query.message.chat.id
+    except:
+        chat_id = update.message.chat_id
+
+    context.bot.send_message(
+        chat_id=chat_id,
+        text='Выберите действие:',
+        reply_markup=user_menu_keyboard()
+    )
+
+    return 'USER_PROFILE'
+
+
+def user_profile(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat.id
+    
+    if query.data == 'new_order':
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='Пришлите задание:',
+        )
+        return 'NEW_ORDER'
+    
+    elif query.data == 'check_tariff':
+        # TODO: добавить проверку
+        message += "У вас нет активного тарифа\n"
+        message += get_tariff_message()
+        context.bot.send_message(
+                chat_id=chat_id,
+                text=message,
+                reply_markup=choose_tariff_keyboard()
+            )
+
+        return 'SEND_BILL'
+
+
+
+def new_order(update, context):
+    pass
 
 def start_manager(update, context):
     pass

@@ -18,5 +18,19 @@ def get_tariff_list():
     return tariffs
 
 def get_tariff(tariff_id: str):
-	tariff = Tariff.objects.get(id=int(tariff_id))
-	return tariff
+    tariff = Tariff.objects.get(id=int(tariff_id))
+    return tariff
+
+def get_tariff_message():
+    tariffs = Tariff.objects.all()
+    message = 'Выберите тариф:'
+    for tariff in tariffs:
+        message += f'\n{tariff.title}:'
+        message += f'\nМаксимальное кол-во обращений в месяц: {tariff.max_requests}'
+        message += f'\nМаксимальное время ответа на заявку: {tariff.max_time_for_ansver}'
+        if tariff.booking_the_developer:
+            message += '\nВозможность закрепить Подрядчика'
+        if tariff.developer_contact:
+            message += '\nВозможность получить контакты Подрядчика'
+        message += '\n'
+    return message

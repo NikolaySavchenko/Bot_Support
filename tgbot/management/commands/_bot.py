@@ -16,6 +16,10 @@ from ._bot_functions import (
     choose_tariff,
     send_bill,
     check_payment,
+    check_active_tariff,
+    user_menu,
+    user_profile,
+    new_order,
     start_manager,
     start_owner,
     profile_owner,
@@ -65,6 +69,10 @@ def handle_users_reply(update, context):
         'CHOOSE_TARIFF': choose_tariff,
         'SEND_BILL': send_bill,
         'CHECK_PAYMENT': check_payment,
+        'CHECK_ACTIVE_TARIFF': check_active_tariff,
+        'USER_MENU': user_menu,
+        'USER_PROFILE': user_profile,
+        'NEW_ORDER': new_order,
 
         # manager
         'START_MANAGER': start_manager,

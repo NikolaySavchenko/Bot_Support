@@ -26,6 +26,14 @@ def owner_menu_keyboard():
     inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
     return inline_kb_markup
 
+def user_menu_keyboard():
+    inline_keyboard = [
+        [InlineKeyboardButton('Отправить новую заявку', callback_data='new_order')],
+        [InlineKeyboardButton('Посмотреть статус подписки', callback_data='check_tariff')]
+    ]
+    inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
+    return inline_kb_markup
+
 
 def choose_tariff_keyboard():
     inline_keyboard = []
