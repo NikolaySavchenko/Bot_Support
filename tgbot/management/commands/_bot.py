@@ -14,6 +14,8 @@ from ._bot_functions import (
     input_company_unp,
     input_company_name,
     choose_tariff,
+    send_bill,
+    check_payment,
     start_manager,
     start_owner,
     profile_owner,
@@ -61,6 +63,8 @@ def handle_users_reply(update, context):
         'INPUT_COMPANY_UNP': input_company_unp,
         'INPUT_COMPANY_NAME': input_company_name,
         'CHOOSE_TARIFF': choose_tariff,
+        'SEND_BILL': send_bill,
+        'CHECK_PAYMENT': check_payment,
 
         # manager
         'START_MANAGER': start_manager,

@@ -16,3 +16,7 @@ def create_company(company_unp: int):
 def get_tariff_list():
     tariffs = Tariff.objects.all()
     return tariffs
+
+def get_tariff(tariff_id: str):
+	tariff = Tariff.objects.get(id=int(tariff_id))
+	return tariff

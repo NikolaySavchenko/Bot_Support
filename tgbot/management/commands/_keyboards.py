@@ -30,6 +30,6 @@ def owner_menu_keyboard():
 def choose_tariff_keyboard():
     inline_keyboard = []
     for tariff in get_tariff_list():
-        inline_keyboard.append([InlineKeyboardButton(tariff.title, callback_data=f'tariff_{tariff.id}')])
+        inline_keyboard.append([InlineKeyboardButton(tariff.title, callback_data=f'{tariff.id}')])
     inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
     return inline_kb_markup

@@ -15,6 +15,8 @@ from ._func_for_user import (
 from ._func_for_company import (
     get_company,
     create_company,
+    get_tariff_list,
+    get_tariff,
 )
 
 
@@ -109,17 +111,60 @@ def choose_tariff(update, context):
     user = get_user(username)
 
     if user.company:
-        company = user.company
-        company.name = company_name
-        company.save()
+        user.company.name = company_name
+        user.company.save()
+
+        tariffs = get_tariff_list()
+        message = 'Выберите тариф:'
+        for tariff in tariffs:
+            message += f'\n{tariff.title}:'
+            message += f'\nМаксимальное кол-во обращений в месяц: {tariff.max_requests}'
+            message += f'\nМаксимальное время ответа на заявку: {tariff.max_time_for_ansver}'
+            if tariff.booking_the_developer:
+                message += '\nВозможность закрепить Подрядчика'
+            if tariff.developer_contact:
+                message += '\nВозможность получить контакты Подрядчика'
+            message += '\n'
         context.bot.send_message(
             chat_id=chat_id,
-            text='Выберите тариф:',
+            text=message,
             reply_markup=choose_tariff_keyboard()
         )
-        return 'CHOOSE_TARIFF'
+        return 'SEND_BILL'
     else:
         return 'INPUT_COMPANY_UNP'
+
+
+def send_bill(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat.id
+    username = query.message.chat.username
+    user = get_user(username)
+
+    if query.data:
+        tariff = get_tariff(query.data)
+        user.company.tariff = tariff
+        user.company.save()
+
+        context.bot.send_message(
+            chat_id=chat_id,
+            text="Оплатите СЧЕТ. Сообщите после оплаты"
+        )
+    return 'CHECK_PAYMENT'
+
+
+def check_payment(update, context):
+    query = update.callback_query
+    chat_id = query.message.chat.id
+    username = query.message.chat.username
+    user = get_user(username)
+
+    context.bot.send_message(
+            chat_id=chat_id,
+            text="Счет еще не оплачен"
+        )
+    
+    return 'CHECK_PAYMENT'
 
 
 def start_manager(update, context):
