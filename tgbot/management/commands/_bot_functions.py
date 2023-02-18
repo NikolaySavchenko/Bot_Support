@@ -1,6 +1,7 @@
 from ._keyboards import (
     choose_group_keyboard,
     owner_menu_keyboard,
+    choose_tariff_keyboard,
 )
 
 from ._func_for_user import (
@@ -9,6 +10,11 @@ from ._func_for_user import (
     create_developer,
     add_user_name,
     add_user_phone,
+)
+
+from ._func_for_company import (
+    get_company,
+    create_company,
 )
 
 
@@ -55,29 +61,65 @@ def input_phone_number(update, context):
     name = update.message.text
     username = update.message.chat.username
     user = get_user(username)
+
     if add_user_name(user, name):
-        print(user.name)
         context.bot.send_message(
             chat_id=chat_id,
             text='Введите номер телефона (пример: +79001234567):',
+        )
+        return 'INPUT_COMPANY_UNP'
+
+
+def input_company_unp(update, context):
+    chat_id = update.message.chat_id
+    phone = update.message.text
+    username = update.message.chat.username
+    user = get_user(username)
+
+    if add_user_phone(user, phone):
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='Введите УНП вашей компании:',
         )
         return 'INPUT_COMPANY_NAME'
 
 
 def input_company_name(update, context):
     chat_id = update.message.chat_id
-    phone = update.message.text
+    company_unp = update.message.text
     username = update.message.chat.username
     user = get_user(username)
 
-    add_user_phone(user, phone)
+    if get_company(company_unp):
+        return 'CHECK_ACTIVE_TARIFf'
+    else:
+        company = create_company(company_unp)
+        user.company = company
+        user.save()
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='Введите название вашей компании:',
+        )
+        return 'CHOOSE_TARIFF'
 
-    context.bot.send_message(
-        chat_id=chat_id,
-        text='Название вашей компании?',
-    )
+def choose_tariff(update, context):
+    chat_id = update.message.chat_id
+    company_name = update.message.text
+    username = update.message.chat.username
+    user = get_user(username)
 
-    return 'CHOOSE_TARIF'
+    if user.company:
+        company = user.company
+        company.name = company_name
+        company.save()
+        context.bot.send_message(
+            chat_id=chat_id,
+            text='Выберите тариф:',
+            reply_markup=choose_tariff_keyboard()
+        )
+        return 'CHOOSE_TARIFF'
+    else:
+        return 'INPUT_COMPANY_UNP'
 
 
 def start_manager(update, context):

@@ -1,5 +1,9 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
+from ._func_for_company import (
+    get_tariff_list,
+)
+
 
 def choose_group_keyboard():
     inline_keyboard = [
@@ -19,5 +23,13 @@ def owner_menu_keyboard():
         [InlineKeyboardButton('Получить статистику по заказам', callback_data='get_statistics_on_orders')],
         [InlineKeyboardButton('Получить статистику по выплатам', callback_data='get_payout_statistics')]
     ]
+    inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
+    return inline_kb_markup
+
+
+def choose_tariff_keyboard():
+    inline_keyboard = []
+    for tariff in get_tariff_list():
+        inline_keyboard.append([InlineKeyboardButton(tariff.title, callback_data=f'tariff_{tariff.id}')])
     inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
     return inline_kb_markup

@@ -11,7 +11,9 @@ from ._bot_functions import (
     start,
     input_name,
     input_phone_number,
+    input_company_unp,
     input_company_name,
+    choose_tariff,
     start_manager,
     start_owner,
     profile_owner,
@@ -56,8 +58,9 @@ def handle_users_reply(update, context):
         'INPUT_PHONE_NUMBER': input_phone_number,
 
         # client
+        'INPUT_COMPANY_UNP': input_company_unp,
         'INPUT_COMPANY_NAME': input_company_name,
-        'CHOOSE_TARIF': input_company_name,
+        'CHOOSE_TARIFF': choose_tariff,
 
         # manager
         'START_MANAGER': start_manager,
@@ -72,6 +75,7 @@ def handle_users_reply(update, context):
     next_state = state_handler(update, context)
 
     if user:
+        user, group = get_user_group(username)
         user.state = next_state
         user.save()
 

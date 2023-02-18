@@ -15,13 +15,13 @@ class Tariff(models.Model):
 
 
 class Company(models.Model):
-    name = models.CharField('Название компании', max_length=200)
+    name = models.CharField('Название компании', max_length=200, blank=True)
     unp = models.IntegerField('УНП компании', unique=True)
-    phone = models.CharField('Телефон', max_length=200)
-    tariff = models.ForeignKey(Tariff, related_name='users', on_delete=models.PROTECT)
-    paid_to = models.DateField('Оплачено до:')
+    phone = models.CharField('Телефон', max_length=200, blank=True)
+    tariff = models.ForeignKey(Tariff, related_name='users', on_delete=models.PROTECT, null=True)
+    # paid_to = models.DateField('Оплачено до:', blank=True, null=True)
     # Поле должно быть высчитываемым, но пока не знаю как сделать, оставлю просто число.
-    orders_paid = models.IntegerField('Оплаченных заказов осталось')
+    orders_paid = models.IntegerField('Оплаченных заказов осталось', default=0)
 
     def __str__(self):
         return self.name
