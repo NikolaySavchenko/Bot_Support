@@ -24,7 +24,12 @@ from ._bot_functions import (
     start_owner,
     profile_owner,
     agreement,
-    find_order_dev,
+    check_agree,
+    check_access,
+    open_access_to_user,
+    close_access_to_user,
+    add_new_developer,
+    close_access_to_developer,
 )
 
 from ._func_for_user import get_user_group
@@ -55,7 +60,7 @@ def handle_users_reply(update, context):
     else:
         user_state = user.state
     
-
+    print(f'user_reply: {user_reply}')
     print(f'group: {group}')
     print(f'user_state: {user_state}')
 
@@ -78,7 +83,8 @@ def handle_users_reply(update, context):
 
         # developer
         'AGREEMENT': agreement,
-        'FIND_ORDER_DEV': find_order_dev,
+        'CHECK_AGREE': check_agree,
+        'CHECK_ACCESS': check_access,
 
         # manager
         'START_MANAGER': start_manager,
@@ -86,6 +92,10 @@ def handle_users_reply(update, context):
         # owner
         'START_OWNER': start_owner,
         'PROFILE_OWNER': profile_owner,
+        'OPEN_ACCESS_TO_USER': open_access_to_user,
+        'CLOSE_ACCESS_TO_USER': close_access_to_user,
+        'ADD_NEW_DEVELOPER': add_new_developer,
+        'CLOSE_ACCESS_TO_DEVELOPER': close_access_to_developer,
     }
 
     state_handler = states_functions[user_state]

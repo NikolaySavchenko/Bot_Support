@@ -24,18 +24,29 @@ def create_user(telegram: str):
 def create_developer(telegram: str):
     developer, created = Developer.objects.get_or_create(
         telegram=telegram,
-        state='INPUT_PHONE_NUMBER'
+        state='INPUT_PHONE_NUMBER',
+        access_to_orders=False
     )
     return created
 
 
 def get_user(telegram: str) -> User:
-    user = User.objects.get(
-        telegram=telegram,
-    )
+    try:
+        user = User.objects.get(
+            telegram=telegram,
+        )
+        return user
+    except:
+        return False
 
-    return user
-
+def get_developer(telegram: str) -> Developer:
+    try:
+        developer = Developer.objects.get(
+            telegram=telegram,
+        )
+        return developer
+    except:
+        return False
 
 def add_user_phone(user: User, phone: str):
     user.phone = phone
