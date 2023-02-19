@@ -7,11 +7,10 @@ from django.db import models
 from django.utils import timezone
 
 
-
 class Tariff(models.Model):
     title = models.CharField('Название тарифа', max_length=200)
     max_requests = models.IntegerField('Максимальное кол-во обращений в месяц')
-    max_time_for_ansver = models.TimeField('Максимальное время ответа на заявку')
+    max_time_for_ansver = models.DurationField('Максимальное время ответа на заявку')
     booking_the_developer = models.BooleanField('Возможность закрепить Подрядчика')
     developer_contact = models.BooleanField('Возможность получить контакты Подрядчика')
     price = models.IntegerField('Цена:')
@@ -26,7 +25,7 @@ class Company(models.Model):
     unp = models.IntegerField('УНП компании', unique=True)
     phone = models.CharField('Телефон', max_length=200, blank=True, null=True)
     tariff = models.ForeignKey(Tariff, related_name='users', on_delete=models.PROTECT, null=True)
-    paid_to = models.DateField('Оплачено до:', default=datetime.datetime(2000,1,1), blank=True, null=True)
+    paid_to = models.DateField('Оплачено до:', default=datetime.datetime(2000, 1, 1), blank=True, null=True)
     # Поле должно быть высчитываемым, но пока не знаю как сделать, оставлю просто число.
     orders_paid = models.IntegerField('Оплаченных заказов осталось', default=0)
 
@@ -34,9 +33,9 @@ class Company(models.Model):
         self.paid_to = timezone.now() + relativedelta.relativedelta(months=1)
         self.save()
 
-
     def __str__(self):
         return self.name
+
 
 class User(models.Model):
     company = models.ForeignKey(Company, related_name='users', on_delete=models.PROTECT, null=True)
@@ -85,12 +84,21 @@ class Order(models.Model):
     description = models.TextField('Описание заказа')
     order_time = models.DateTimeField('Время получения заказ', auto_now_add=True)
     # Должно ставиться автоматически при приеме в работу
-    answer_time = models.DateTimeField('Время ответа на заказ')
+    answer_time = models.DateTimeField('Время ответа на заказ', null=True, blank=True)
     developer = models.ForeignKey(Developer, related_name='orders', on_delete=models.PROTECT)
     STATUS_CHOICES = [('N', 'New'), ('W', 'In work'), ('C', 'Completed')]
     status = models.CharField('Статус заказа', choices=STATUS_CHOICES, max_length=1)
     # Должно ставиться автоматичеки при завершении заказа
-    comleted_time = models.DateTimeField('Время выполнения')
+    comleted_time = models.DateTimeField('Время выполнения', null=True, blank=True)
+
+    def max_answer_time(self):
+        user = self.user
+        company = user.company
+        tariff = company.tariff
+        answer_time = tariff.max_time_for_ansver
+        self.answer_time = self.order_time + answer_time
+        self.save()
+        return f'Время ответа до: {self.answer_time}'
 
 
 class Conversions(models.Model):
@@ -99,6 +107,3 @@ class Conversions(models.Model):
     developer = models.ForeignKey(Developer, related_name='questions', on_delete=models.PROTECT)
     users_quote = models.CharField(max_length=1000)
     developers_quote = models.CharField(max_length=1000)
-
-
-
