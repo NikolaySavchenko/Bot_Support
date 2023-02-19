@@ -3,11 +3,13 @@ from ._keyboards import (
     owner_menu_keyboard,
     user_menu_keyboard,
     choose_tariff_keyboard,
+    agreement_keyboard,
 )
 
 from ._func_for_user import (
     get_user_group,
     get_user,
+    add_user_phone,
     create_user,
     create_developer,
 )
@@ -64,7 +66,7 @@ def input_phone_number(update, context):
     name = update.message.text
     username = update.message.chat.username
     user, group = get_user_group(username)
-    user.name = company
+    user.name = name
     user.save()
 
     context.bot.send_message(
@@ -173,7 +175,7 @@ def check_active_tariff(update, context):
     user = get_user(username)
 
     # TODO: добавить проверку
-    message += "У вас нет активного тарифа\n"
+    message = "У вас нет активного тарифа\n"
     message += get_tariff_message()
     context.bot.send_message(
             chat_id=chat_id,
@@ -213,7 +215,7 @@ def user_profile(update, context):
     
     elif query.data == 'check_tariff':
         # TODO: добавить проверку
-        message += "У вас нет активного тарифа\n"
+        message = "У вас нет активного тарифа\n"
         message += get_tariff_message()
         context.bot.send_message(
                 chat_id=chat_id,
@@ -232,7 +234,26 @@ def new_order(update, context):
 
     order = create_order(user, order_description)
 
+    context.bot.send_message(
+        chat_id=chat_id,
+        text='Ваш заказ принят. Ожидайте ответа.'
+    )
+
+
+
 def agreement(update, context):
+    chat_id = update.message.chat_id
+    
+    message = "Наши условия - ... \n Вы согласны продолжить работу?"
+    context.bot.send_message(
+        chat_id=chat_id,
+        text=message,
+        reply_markup=agreement_keyboard()
+    )
+
+    return 'FIND_ORDER_DEV'
+
+def find_order_dev(update, context):
     pass
 
 def start_manager(update, context):

@@ -24,6 +24,7 @@ from ._bot_functions import (
     start_owner,
     profile_owner,
     agreement,
+    find_order_dev,
 )
 
 from ._func_for_user import get_user_group
@@ -77,6 +78,7 @@ def handle_users_reply(update, context):
 
         # developer
         'AGREEMENT': agreement,
+        'FIND_ORDER_DEV': find_order_dev,
 
         # manager
         'START_MANAGER': start_manager,

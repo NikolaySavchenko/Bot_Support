@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from tgbot.models import Company, Tariff, Order, User
 
 
@@ -37,4 +39,12 @@ def get_tariff_message():
 
 def create_order(user: User, order_description: str):
 	tariff = user.company.tariff
-	#TODO: создать и вернуть заказ
+	answer_time = timezone.now() + tariff.max_time_for_ansver
+	order = Order.objects.create(
+		user=user,
+		description=order_description,
+		answer_time=answer_time,
+		status='N',
+
+	)
+	return order

@@ -85,7 +85,7 @@ class Order(models.Model):
     order_time = models.DateTimeField('Время получения заказ', auto_now_add=True)
     # Должно ставиться автоматически при приеме в работу
     answer_time = models.DateTimeField('Время ответа на заказ', null=True, blank=True)
-    developer = models.ForeignKey(Developer, related_name='orders', on_delete=models.PROTECT)
+    developer = models.ForeignKey(Developer, related_name='orders', on_delete=models.PROTECT, null=True)
     STATUS_CHOICES = [('N', 'New'), ('W', 'In work'), ('C', 'Completed')]
     status = models.CharField('Статус заказа', choices=STATUS_CHOICES, max_length=1)
     # Должно ставиться автоматичеки при завершении заказа
