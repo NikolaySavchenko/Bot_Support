@@ -89,6 +89,8 @@ class Conversions(models.Model):
     order = models.ForeignKey(Order, related_name='conversations', on_delete=models.PROTECT)
     user = models.ForeignKey(User, related_name='details', on_delete=models.PROTECT)
     developer = models.ForeignKey(Developer, related_name='questions', on_delete=models.PROTECT)
+    users_quote = models.CharField(max_length=1000)
+    developers_quote = models.CharField(max_length=1000)
 
 
 
