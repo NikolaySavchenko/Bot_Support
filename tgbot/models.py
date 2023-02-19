@@ -25,13 +25,24 @@ class Company(models.Model):
     unp = models.IntegerField('УНП компании', unique=True)
     phone = models.CharField('Телефон', max_length=200, blank=True, null=True)
     tariff = models.ForeignKey(Tariff, related_name='users', on_delete=models.PROTECT, null=True)
-    paid_to = models.DateField('Оплачено до:', default=datetime.datetime(2000, 1, 1), blank=True, null=True)
+    paid_to = models.DateField('Оплачено до:',
+                               default=(timezone.now() + relativedelta.relativedelta(year=20)),
+                               blank=True, null=True)
     # Поле должно быть высчитываемым, но пока не знаю как сделать, оставлю просто число.
     orders_paid = models.IntegerField('Оплаченных заказов осталось', default=0)
 
     def activate_per_month(self):
         self.paid_to = timezone.now() + relativedelta.relativedelta(months=1)
         self.save()
+
+    def is_active(self):
+        try:
+            if self.paid_to >= timezone.now():
+                return True
+            else:
+                return False
+        except:
+            return False
 
     def __str__(self):
         return self.name
