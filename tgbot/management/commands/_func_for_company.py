@@ -1,4 +1,4 @@
-from tgbot.models import Company, Tariff
+from tgbot.models import Company, Tariff, Order, User
 
 
 def get_company(company_unp: int):
@@ -34,3 +34,7 @@ def get_tariff_message():
             message += '\nВозможность получить контакты Подрядчика'
         message += '\n'
     return message
+
+def create_order(user: User, order_description: str):
+	tariff = user.company.tariff
+	#TODO: создать и вернуть заказ

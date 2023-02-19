@@ -41,3 +41,11 @@ def choose_tariff_keyboard():
         inline_keyboard.append([InlineKeyboardButton(tariff.title, callback_data=f'{tariff.id}')])
     inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
     return inline_kb_markup
+
+def agreement_keyboard():
+    inline_keyboard = [
+        [InlineKeyboardButton('Да', callback_data='agree')],
+        [InlineKeyboardButton('Нет', callback_data='disagree')]
+    ]
+    inline_kb_markup = InlineKeyboardMarkup(inline_keyboard)
+    return inline_kb_markup

@@ -29,12 +29,6 @@ def create_developer(telegram: str):
     return created
 
 
-def add_user_name(user: User, name: str):
-    user.name = name
-    user.save()
-    return True
-
-
 def get_user(telegram: str) -> User:
     user = User.objects.get(
         telegram=telegram,

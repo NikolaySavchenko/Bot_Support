@@ -6,11 +6,10 @@ from ._keyboards import (
 )
 
 from ._func_for_user import (
+    get_user_group,
     get_user,
     create_user,
     create_developer,
-    add_user_name,
-    add_user_phone,
 )
 
 from ._func_for_company import (
@@ -19,6 +18,7 @@ from ._func_for_company import (
     get_tariff_list,
     get_tariff,
     get_tariff_message,
+    create_order,
 )
 
 
@@ -54,7 +54,6 @@ def input_name(update, context):
                 chat_id=chat_id,
                 text='Как вас зовут?'
             )
-            # TODO: вести прогера по его ветке
             return 'INPUT_PHONE_NUMBER'
         else:
             return '/start'
@@ -64,14 +63,18 @@ def input_phone_number(update, context):
     chat_id = update.message.chat_id
     name = update.message.text
     username = update.message.chat.username
-    user = get_user(username)
+    user, group = get_user_group(username)
+    user.name = company
+    user.save()
 
-    if add_user_name(user, name):
-        context.bot.send_message(
-            chat_id=chat_id,
-            text='Введите номер телефона (пример: +79001234567):',
-        )
+    context.bot.send_message(
+        chat_id=chat_id,
+        text='Введите номер телефона (пример: +79001234567):',
+    )
+    if group == 'CLIENT':
         return 'INPUT_COMPANY_UNP'
+    if group == 'DEVELOPER':
+        return 'AGREEMENT'
 
 
 def input_company_unp(update, context):
@@ -165,9 +168,8 @@ def check_payment(update, context):
 
 
 def check_active_tariff(update, context):
-    query = update.callback_query
-    chat_id = query.message.chat.id
-    username = query.message.chat.username
+    chat_id = update.message.chat_id
+    username = update.message.chat.username
     user = get_user(username)
 
     # TODO: добавить проверку
@@ -222,8 +224,15 @@ def user_profile(update, context):
         return 'SEND_BILL'
 
 
-
 def new_order(update, context):
+    chat_id = update.message.chat_id
+    order_description = update.message.text
+    username = update.message.chat.username
+    user = get_user(username)
+
+    order = create_order(user, order_description)
+
+def agreement(update, context):
     pass
 
 def start_manager(update, context):

@@ -23,6 +23,7 @@ from ._bot_functions import (
     start_manager,
     start_owner,
     profile_owner,
+    agreement,
 )
 
 from ._func_for_user import get_user_group
@@ -73,6 +74,9 @@ def handle_users_reply(update, context):
         'USER_MENU': user_menu,
         'USER_PROFILE': user_profile,
         'NEW_ORDER': new_order,
+
+        # developer
+        'AGREEMENT': agreement,
 
         # manager
         'START_MANAGER': start_manager,
