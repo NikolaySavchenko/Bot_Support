@@ -1,8 +1,11 @@
 from enum import unique
 
 import datetime
+from dateutil import relativedelta
 
 from django.db import models
+from django.utils import timezone
+
 
 
 class Tariff(models.Model):
@@ -26,6 +29,11 @@ class Company(models.Model):
     paid_to = models.DateField('Оплачено до:', default=datetime.datetime(2000,1,1), blank=True, null=True)
     # Поле должно быть высчитываемым, но пока не знаю как сделать, оставлю просто число.
     orders_paid = models.IntegerField('Оплаченных заказов осталось', default=0)
+
+    def activate_per_month(self):
+        self.paid_to = timezone.now() + relativedelta.relativedelta(months=1)
+        self.save()
+
 
     def __str__(self):
         return self.name
