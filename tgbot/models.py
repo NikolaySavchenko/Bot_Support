@@ -37,7 +37,7 @@ class Company(models.Model):
 
     def is_active(self):
         try:
-            if self.paid_to >= timezone.now():
+            if self.paid_to >= timezone.now().date():
                 return True
             else:
                 return False

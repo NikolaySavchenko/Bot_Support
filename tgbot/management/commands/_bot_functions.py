@@ -24,8 +24,6 @@ from ._func_for_company import (
     create_order,
 )
 
-from django.utils import timezone
-
 
 def start(update, context):
     chat_id = update.message.chat.id
@@ -158,8 +156,7 @@ def check_payment(update, context):
     chat_id = update.message.chat_id
     username = update.message.chat.username
     user = get_user(username)
-
-    if user.company.paid_to > timezone.now():
+    if user.company.is_active():
         context.bot.send_message(
             chat_id=chat_id,
             text="Счет успешно оплачен! Выберите действие:",
